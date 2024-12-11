@@ -26,16 +26,16 @@ resource "oci_core_subnet" "oda-public-subnet" {
   security_list_ids           = [oci_core_security_list.oda-public-sl[0].id]
 }
 
-// Public Subnet for OKE API Endpoint
-resource "oci_core_subnet" "oda-public-subnet-oke" {
+// Private Subnet for OKE API Endpoint
+resource "oci_core_subnet" "oda-private-subnet-oke" {
   count                       = var.create_vcn ? 1 : 0
-  cidr_block                  = lookup(var.network_cidrs, "OKE-PUBLIC-SUBNET-REGIONAL-CIDR" )
+  cidr_block                  = lookup(var.network_cidrs, "OKE-PRIVATE-SUBNET-REGIONAL-CIDR" )
   compartment_id              = var.compartment_ocid
   vcn_id                      = oci_core_vcn.oda-cc-vcn[0].id
-  display_name                = "${var.prefix_name} (OKE API) - Public"
-  prohibit_public_ip_on_vnic  = false // Public Subnet
-  route_table_id              = oci_core_route_table.oda-public-rt-oke[0].id
-  security_list_ids           = [oci_core_security_list.oda-public-sl-oke[0].id]
+  display_name                = "${var.prefix_name} (OKE API) - Private"
+  prohibit_public_ip_on_vnic  = true // Public Subnet
+  route_table_id              = oci_core_route_table.oda-private-rt-oke[0].id
+  security_list_ids           = [oci_core_security_list.oda-private-sl-oke[0].id]
 }
 
 // Private Subnet for OKE Worker Nodes
@@ -123,20 +123,26 @@ resource "oci_core_route_table" "oda-public-rt" {
 
 }
 
-// Public Subnet Routing Table for OKE API Endpoint
-resource "oci_core_route_table" "oda-public-rt-oke" {
+// Private Subnet Routing Table for OKE API Endpoint ## change me
+resource "oci_core_route_table" "oda-private-rt-oke" {
   count                = var.create_vcn ? 1 : 0
   compartment_id       = var.compartment_ocid
   vcn_id               = oci_core_vcn.oda-cc-vcn[0].id
-  display_name         = "${var.prefix_name} Public RT (OKE API)"
+  display_name         = "${var.prefix_name} Private RT (OKE API)"
 
-  // Enable all traffic through Internet Gateway
+  // Enable all traffic through NAT Gateway
   route_rules {
-    network_entity_id  = oci_core_internet_gateway.oda-internet-gateway[0].id
-    destination        = lookup(var.network_cidrs , "ALL-CIDR" )
-    destination_type   = "CIDR_BLOCK"
+    network_entity_id   = oci_core_nat_gateway.oda-nat-gateway[0].id
+    destination         = lookup(var.network_cidrs , "ALL-CIDR" )
+    destination_type    = "CIDR_BLOCK"
   }
 
+  // Enable all traffic through Service Gateway
+  route_rules {
+    network_entity_id   = oci_core_service_gateway.oda_service_gateway[0].id
+    destination         = data.oci_core_services.all_services.services.0.cidr_block
+    destination_type    = "SERVICE_CIDR_BLOCK"
+  }
 }
 
 // Private Subnet Routing Table for OKE Worker Nodes
@@ -206,12 +212,12 @@ resource "oci_core_security_list" "oda-public-sl" {
   }
 }
 
-// Public Subnet Security List for OKE API Endpoint
-resource "oci_core_security_list" "oda-public-sl-oke" {
+// Private Subnet Security List for OKE API Endpoint ## change me
+resource "oci_core_security_list" "oda-private-sl-oke" {
   count          = var.create_vcn ? 1 : 0
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.oda-cc-vcn[0].id
-  display_name   = "${var.prefix_name} Public SL (OKE API)"
+  display_name   = "${var.prefix_name} Private SL (OKE API)"
 
   # Egress - Allow All
   egress_security_rules {

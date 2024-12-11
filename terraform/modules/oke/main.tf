@@ -14,7 +14,7 @@ resource "oci_containerengine_cluster" "oda-cc-cluster" {
   vcn_id             = var.oke-vcn_id
 
   endpoint_config {
-    is_public_ip_enabled = true
+    is_public_ip_enabled = false
     subnet_id            = var.oke-subnet_id
   }
 

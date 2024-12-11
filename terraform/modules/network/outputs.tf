@@ -10,7 +10,7 @@ output "oda_private_subnet_lb_id" {
 
 output "oda_public_subnet_oke_id" {
   description = "The ID of the public subnet for OKE"
-  value       = oci_core_subnet.oda-public-subnet-oke[0].id
+  value       = oci_core_subnet.oda-private-subnet-oke[0].id
 }
 
 output "oda_cc_vcn_id" {

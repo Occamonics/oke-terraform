@@ -50,19 +50,7 @@ variable "apigateway_path_prefix" {
   default = "/oda"
 }
 
-#*************************************
-#    OCI Vault Specific
-#*************************************
 
-// Create new vault
-variable "create_vault" {
-  default = true
-}
-
-// Existing Vault OCID - Only if "create_vault" is set to "false"
-variable "existing_vault_id" {
-  default = ""
-}
 
 #*************************************
 #         Network Specific
@@ -107,7 +95,7 @@ variable "network_cidrs" {
     PUBLIC-SUBNET-REGIONAL-CIDR     = "10.0.0.0/24"
     PRIVATE-SUBNET-REGIONAL-CIDR    = "10.0.1.0/24"
     LB-PRIVATE-SUBNET-REGIONAL-CIDR = "10.0.2.0/24"
-    OKE-PUBLIC-SUBNET-REGIONAL-CIDR = "10.0.3.0/24"
+    OKE-PRIVATE-SUBNET-REGIONAL-CIDR = "10.0.3.0/24"
     ALL-CIDR                        = "0.0.0.0/0"
   }
 }
@@ -128,7 +116,9 @@ variable "private_key_path"{
 variable "fingerprint"{
   default = ""
 }
-variable "compartment_ocid" {
+
+variable "private_key_password" {
+
 }
 
 #*************************************
@@ -152,14 +142,11 @@ variable "ocir_registry_url" {
 }
 
 variable "ocir_namespace" {
-  default = "axq6t3vfixne"
 }
 
 variable "oci_service_account_username" {
-  default = "service_account"
 }
 
 variable "oci_service_auth_token" {
-  default = "KFAvxD:-][7vvaRA0Lj:"
 }
 

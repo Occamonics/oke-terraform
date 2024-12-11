@@ -32,7 +32,7 @@ variable "network_cidrs" {
     PUBLIC-SUBNET-REGIONAL-CIDR     = "10.0.0.0/24"
     PRIVATE-SUBNET-REGIONAL-CIDR    = "10.0.1.0/24"
     LB-PRIVATE-SUBNET-REGIONAL-CIDR = "10.0.2.0/24"
-    OKE-PUBLIC-SUBNET-REGIONAL-CIDR = "10.0.3.0/24"
+    OKE-PRIVATE-SUBNET-REGIONAL-CIDR = "10.0.3.0/24"
     ALL-CIDR                        = "0.0.0.0/0"
   }
 }
