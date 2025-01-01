@@ -9,7 +9,8 @@
 // Gateway
 resource oci_apigateway_gateway oda-gateway {
   compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix_name} API Gateway"
+  # display_name   = "${var.prefix_name} API Gateway"
+  display_name   = "dh-AI-OKE-APIGW"
   endpoint_type  = "PUBLIC"
   subnet_id      = var.api-gateway-subnet_id
 }
@@ -20,7 +21,7 @@ resource "oci_apigateway_deployment" "oda-gateway-deployment" {
   compartment_id = var.compartment_ocid
   gateway_id     = oci_apigateway_gateway.oda-gateway.id
   path_prefix    = var.apigateway_path_prefix
-  display_name   = "${var.prefix_name} Services Deployment"
+  display_name   = "ODA Services Deployment"
 
   // API Gateway Deployment Details
   specification {

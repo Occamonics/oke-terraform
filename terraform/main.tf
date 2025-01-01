@@ -10,7 +10,7 @@ module "network" {
   compartment_ocid = oci_identity_compartment.dh-AI-cmp.id
   create_vcn       = var.create_vcn
   prefix_name      = var.prefix_name
-  # network_cidrs    = var.network_cidrs
+  network_cidrs    = var.network_cidrs
 }
 
 module "oke" {

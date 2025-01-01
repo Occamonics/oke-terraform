@@ -1,55 +1,55 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: ${env}
-  name: ${cc-name}-deployment
+  namespace: ${ENV}
+  name: ${CUSTOM_COMPONENT_NAME}-deployment
   labels:
-    app: ${cc-name}
+    app: ${CUSTOM_COMPONENT_NAME}
     env: oda
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${cc-name}
+      app: ${CUSTOM_COMPONENT_NAME}
       env: oda
   template:
     metadata:
       labels:
-        app: ${cc-name}
+        app: ${CUSTOM_COMPONENT_NAME}
         env: oda
     spec:
       serviceAccountName: oci-service-account
       imagePullSecrets:
         - name: oci-secret
       containers:
-        - name: ${cc-name}
+        - name: ${CUSTOM_COMPONENT_NAME}
           imagePullPolicy: Always
-          image: ${ocir_registry_url}/${ocir_namespace}/${cc-name}:v1
+          image: ${OCIR_REGISTRY_URL}/${OCIR_NAMESPACE}/${CUSTOM_COMPONENT_NAME}:${CUSTOM_COMPONENT_VERSION}
           ports:
             - containerPort: 3000
-              name: ${cc-name}-port
+              name: ${CUSTOM_COMPONENT_NAME}-port
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${cc-name}-svc
-  namespace: ${env}
+  name: ${CUSTOM_COMPONENT_NAME}-svc
+  namespace: ${ENV}
 spec:
   selector:
-    app: ${cc-name}
+    app: ${CUSTOM_COMPONENT_NAME}
     env: oda
   ports:
-    - name: svc-${cc-name}-port
+    - name: svc-${CUSTOM_COMPONENT_NAME}-port
       protocol: TCP
       port: 80
-      targetPort: ${cc-name}-port
+      targetPort: ${CUSTOM_COMPONENT_NAME}-port
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ${cc-name}-ingress
-  namespace: ${env}
+  name: ${CUSTOM_COMPONENT_NAME}-ingress
+  namespace: ${ENV}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
@@ -57,10 +57,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: /${cc-name}/(.*)
+          - path: /${OKE_PATH_ENDPOINT}/(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: ${cc-name}-svc
+                name: ${CUSTOM_COMPONENT_NAME}-svc
                 port:
-                  name: svc-${cc-name}-port
+                  name: svc-${CUSTOM_COMPONENT_NAME}-port

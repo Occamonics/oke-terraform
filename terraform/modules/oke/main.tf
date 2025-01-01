@@ -10,7 +10,7 @@
 resource "oci_containerengine_cluster" "oda-cc-cluster" {
   compartment_id     = var.compartment_ocid
   kubernetes_version = local.cluster_k8s_latest_version
-  name               = "${var.prefix_name} Cluster"
+  name               = "dh-AI-OKE-Cluster"
   vcn_id             = var.oke-vcn_id
 
   endpoint_config {
@@ -35,7 +35,7 @@ resource "oci_containerengine_node_pool" "node-pool-1" {
   cluster_id         = oci_containerengine_cluster.oda-cc-cluster.id
   compartment_id     = var.compartment_ocid
   kubernetes_version = oci_containerengine_cluster.oda-cc-cluster.kubernetes_version
-  name               = "node-pool-1"
+  name               = "dh-AI-node-pool-1"
   node_shape         = var.oke-worker-node-shape
   #  node_shape          = "VM.Standard.E4.Flex"
 
